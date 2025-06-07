@@ -9,8 +9,12 @@ services:
     container_name: doc-manager-backend
     ports:
       - "3000:3000"
-    env_file:
-      - .env
+    environment:
+      - POSTGRES_HOST=doc-manager-postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=doc-manager
     volumes:
       - .:/app
       - /app/node_modules
