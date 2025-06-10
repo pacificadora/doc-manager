@@ -1,9 +1,9 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Role } from './role.entity';
+import { RoleEntity } from './role.entity';
 import { BaseEntity } from './base.entity';
 
 @Entity('users')
-export class User extends BaseEntity {
+export class UserEntity extends BaseEntity {
     @Column({ unique: true })
     email: string;
 
@@ -16,9 +16,9 @@ export class User extends BaseEntity {
     @Column()
     lastName: string;
 
-    @ManyToOne(() => Role, (role) => role.users, { eager: true })
+    @ManyToOne(() => RoleEntity, (role) => role.users, { eager: true })
     @JoinColumn({ name: 'roleId' })
-    role: Role;
+    role: RoleEntity;
     @Column()
     roleId: string;
 

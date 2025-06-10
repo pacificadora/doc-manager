@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { BaseEntity } from './base.entity';
 
 @Entity('documents')
@@ -16,9 +16,9 @@ export class Document extends BaseEntity {
     @Column({ default: 'uploaded' }) // uploaded, processing, ingested, failed
     status: string;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => UserEntity)
     @JoinColumn({ name: 'userId' })
-    user: User;
+    user: UserEntity;
 
     @Column()
     userId: string;

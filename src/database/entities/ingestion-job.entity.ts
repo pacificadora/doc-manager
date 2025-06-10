@@ -1,19 +1,19 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Document } from './document.entity';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { BaseEntity } from './base.entity';
 
 @Entity('ingestion_jobs')
-export class IngestionJob extends BaseEntity {
+export class IngestionJobEntity extends BaseEntity {
     @ManyToOne(() => Document)
     @JoinColumn({ name: 'document_id' })
     document: Document;
     @Column()
     documentId: string;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => UserEntity)
     @JoinColumn({ name: 'updated_by' })
-    updatedBy: User;
+    updatedBy: UserEntity;
 
     @Column()
     updated_by: string;
