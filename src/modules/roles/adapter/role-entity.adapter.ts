@@ -19,10 +19,8 @@ export class RoleEntityAdapter {
         domain: Omit<Role, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
     ): RoleEntity {
         const entity = new RoleEntity();
-
         entity.name = domain.name;
         entity.description = domain.description;
-
         return entity;
     }
 }

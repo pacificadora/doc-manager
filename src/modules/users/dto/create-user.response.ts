@@ -1,15 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 
-import { FileType } from '../../files/domain/file';
-import { Role } from '../../roles/domain/role';
-import { UserSettings } from './user-setting';
+// import { FileType } from '../../files/domain/file';
+import { RoleEntity } from 'src/database/entities/role.entity';
 
-export class User {
+export class UserResponse {
     @ApiProperty({
-        type: 'number',
+        type: 'string',
     })
-    id: number;
+    id: string;
 
     @ApiProperty({
         type: String,
@@ -37,9 +36,9 @@ export class User {
     lastName: string | null;
 
     @ApiProperty({
-        type: () => Role,
+        type: () => RoleEntity,
     })
-    role?: Role | null;
+    role?: RoleEntity | null;
 
     @ApiProperty()
     createdAt: Date;
@@ -50,10 +49,8 @@ export class User {
     @ApiProperty()
     deletedAt: Date;
 
-    @ApiProperty()
-    settings?: UserSettings | null;
-    @ApiProperty({
-        type: () => FileType,
-    })
-    photo?: FileType | null;
+    // @ApiProperty({
+    //     type: () => FileType,
+    // })
+    // photo?: FileType | null;
 }

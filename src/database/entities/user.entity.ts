@@ -16,6 +16,9 @@ export class UserEntity extends BaseEntity {
     @Column()
     lastName: string;
 
+    @Column({ type: String, nullable: true })
+    salt?: string;
+
     @ManyToOne(() => RoleEntity, (role) => role.users, { eager: true })
     @JoinColumn({ name: 'roleId' })
     role: RoleEntity;
