@@ -10,6 +10,9 @@ export class RoleEntity extends BaseEntity {
     @Column({ nullable: true })
     description: string;
 
+    @Column()
+    isDefault?: boolean
+
     @OneToMany(() => UserEntity, (user) => user.role)
     users: UserEntity[];
 }
