@@ -1,24 +1,21 @@
-import { DataSource } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
 import { config } from 'dotenv';
-import { EnvConstants } from "../constants/env.constants";
+import { ENV_CONSTANTS_VALUES, EnvConstants } from "../constants/env.constants";
 import { TypeOrmModuleAsyncOptions } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { join } from "path";
 
 config();
-
-export const databaseConnection: TypeOrmModuleAsyncOptions = {
-    imports: [ConfigModule],
-    inject: [ConfigService],
-    useFactory: async (configService: ConfigService) => ({
-        type: "postgres",
-        host: configService.get(EnvConstants.POSTGRES_HOST),
-        port: configService.get(EnvConstants.POSTGRES_PORT),
-        username: configService.get(EnvConstants.POSTGRES_USER),
-        password: configService.get(EnvConstants.POSTGRES_PASSWORD),
-        database: configService.get(EnvConstants.POSTGRES_DB),
-        entities: [__dirname + "/../**/*.entity{.ts,.js}"],
-        migrations: [__dirname + "/../migrations/*{.ts,.js}"],
-        synchronize: true,
-        // logging: true,
-    }),
-}
+export const dataSourceOptions: DataSourceOptions = {
+    type: 'postgres',
+    host: process.env[EnvConstants.POSTGRES_HOST],
+    port: parseInt(process.env[EnvConstants.PORT] || '5432', 10),
+    username: process.env[EnvConstants.POSTGRES_USER],
+    password: process.env[EnvConstants.POSTGRES_PASSWORD],
+    database: process.env[EnvConstants.POSTGRES_DB],
+    entities: [join(__dirname, '../**/*.entity{.ts,.js}')],
+    migrations: [join(__dirname, './migrations/**/*{.ts,.js}')],
+    synchronize:
+        process.env[EnvConstants.NODE_ENV] === ENV_CONSTANTS_VALUES.LOCAL,
+};
+export const AppDataSource = new DataSource(dataSourceOptions);
