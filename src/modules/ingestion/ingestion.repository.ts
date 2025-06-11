@@ -6,7 +6,6 @@ import { NullableType } from '../../../common/types/nullable.type';
 import { IngestionEntity } from '../../../database/entity/ingestion.entity';
 import { User } from '../../users/domain/user';
 import { Ingestion } from '../domain/ingestion';
-import { IngestionRepository } from '../ingestion.repository';
 import { IngestionMapper } from './mappers/ingestion.mapper';
 
 @Injectable()
