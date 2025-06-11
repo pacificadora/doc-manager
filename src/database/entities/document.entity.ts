@@ -1,28 +1,27 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { UserEntity } from './user.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { FileEntity } from './file.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('documents')
-export class Document extends BaseEntity {
+export class DocumentEntity extends BaseEntity {
+    @ApiProperty({ example: 'Project Requirements' })
     @Column()
-    fileName: string;
+    title: string;
 
-    @Column()
-    filePath: string;
+    @ApiProperty({ example: 'Project scope and requirements documentation' })
+    @Column({ nullable: true })
+    description?: string;
 
-    @Column()
-    mimeType: string;
+    @OneToOne(() => FileEntity, { cascade: true, nullable: true })
+    @JoinColumn({ name: 'file_id' })
+    file: FileEntity | null;
 
-    @Column({ default: 'uploaded' }) // uploaded, processing, ingested, failed
-    status: string;
+    @Column({ name: 'file_id', unique: true, nullable: true })
+    fileId: number | null;
 
-    @ManyToOne(() => UserEntity)
-    @JoinColumn({ name: 'userId' })
-    user: UserEntity;
-
-    @Column()
-    userId: string;
-
-    @Column({ default: false })
-    isDeleted: boolean;
+    @ManyToOne(() => UserEntity, (user) => user.id)
+    @JoinColumn({ name: 'uploaded_by_id' })
+    uploadedBy: UserEntity;
 }
