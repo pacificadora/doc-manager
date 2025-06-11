@@ -3,9 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Role {
     @ApiProperty({
-        type: 'string',
+        type: 'number',
     })
-    id: string;
+    id: number;
 
     @ApiProperty({
         type: String,
@@ -19,6 +19,11 @@ export class Role {
     })
     description?: string;
 
+    @ApiProperty({
+        type: Boolean,
+        example: true,
+    })
+    isActive?: boolean;
     @ApiProperty({
         type: Boolean,
         example: true,

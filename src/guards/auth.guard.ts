@@ -9,7 +9,7 @@ import { Request } from 'express';
 
 import { RoleType } from '../common/types/role.type';
 import { ROLES_KEY } from '../decorators/roles.decorator';
-// import { JwtPayloadType } from '../modules/auth/strategies/types/jwt-payload.type';
+import { JwtPayloadType } from 'src/modules/auth/startegies/types/index.types';
 
 interface RequestWithUser extends Request {
     user: JwtPayloadType;

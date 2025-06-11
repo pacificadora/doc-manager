@@ -1,7 +1,6 @@
-import { type Session } from '../../../session/domain/session';
-import { type Role } from '../../../roles/domain/role';
-import { type Session } from '../../../session/domain/session';
-import { type User } from '../../../users/domain/user';
+import { Session } from '../../../session/domain/session';
+import { Role } from '../../../roles/dto/role-reponse.dto';
+import { UserResponse } from '../../../users/dto/create-user.response';
 
 export type JwtRefreshPayloadType = {
     sessionId: Session['id'];
@@ -13,7 +12,7 @@ export type JwtRefreshPayloadType = {
 export type JwtPayloadType = {
     sessionId: Session['id'];
     roleId: Role['id'];
-    id: User['id'];
+    id: UserResponse['id'];
     iat: number;
     exp: number;
 };
