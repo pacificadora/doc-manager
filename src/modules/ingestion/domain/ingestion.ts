@@ -4,7 +4,7 @@ import {
     EnumField,
     NumberField,
     StringField,
-} from '../../../decorators/field.decorators';
+} from '../../../decorators/field.decorator';
 import { Document } from '../../documents/domain/document';
 import { User } from '../../users/domain/user';
 

@@ -2,67 +2,60 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
-import { NullableType } from '../../common/types/nullable.type';
-import { UserEntity } from '../../database/entities/user.entity';
-import { UserEntityAdapter } from './adapter/user.adapter';
-import { UserResponse } from './dto/create-user.response';
+import { NullableType } from '../../../common/types/nullable.type';
+import { UserEntity } from '../../../database/entity/user.entity';
+import { UserSettingsEntity } from '../../../database/entity/user-settings.entity';
+import { User } from '../domain/user';
+import { UserSettings } from '../domain/user-setting';
+import { UserRepository } from '../user.repository';
+import { UserMapper } from './mappers/user.mapper';
+import { UserSettingsMapper } from './mappers/user-settings.mapper';
 
 @Injectable()
-export class UsersRepository {
+export class UsersRelationalRepository implements UserRepository {
     constructor(
         @InjectRepository(UserEntity)
         private readonly usersRepository: Repository<UserEntity>,
+        @InjectRepository(UserSettingsEntity)
+        private readonly userSettingsRepository: Repository<UserSettingsEntity>,
     ) { }
 
-    async create(data: UserEntity): Promise<UserResponse> {
-        const entity = UserEntityAdapter.mapToEntity(data);
-        const savedEntity = await this.usersRepository.save(
-            this.usersRepository.create(entity),
+    async create(data: User): Promise<User> {
+        const persistenceModel = UserMapper.toPersistence(data);
+        const newEntity = await this.usersRepository.save(
+            this.usersRepository.create(persistenceModel),
         );
-        const domainUser = UserEntityAdapter.mapToDomain(savedEntity);
-        return this.toResponse(domainUser);
+        return UserMapper.toDomain(newEntity);
     }
-
-    async findByEmail(email: UserEntity['email']): Promise<NullableType<UserResponse>> {
-        if (!email) return null;
-
-        const entity = await this.usersRepository.findOne({
-            where: { email },
-            relations: ['role', 'settings'],
+    async findByEmail(email: User['email']): Promise<NullableType<User>> {
+        if (!email) {
+            return null;
+        }
+        const user = await this.usersRepository.findOne({
+            where: {
+                email,
+            },
         });
-
-        if (!entity) return null;
-
-        const domainUser = UserEntityAdapter.mapToDomain(entity);
-        return this.toResponse(domainUser);
+        return user;
     }
-
+    async createUserSettings(data: UserSettings): Promise<UserSettings> {
+        const persistenceModel = UserSettingsMapper.toPersistence(data);
+        const newEntity = await this.userSettingsRepository.save(
+            this.userSettingsRepository.create(persistenceModel),
+        );
+        return newEntity;
+    }
     async findOneBy(
         options: FindOptionsWhere<UserEntity>,
-    ): Promise<NullableType<UserResponse>> {
-        const entity = await this.usersRepository.findOneBy(options);
-        if (!entity) return null;
-
-        const domainUser = UserEntityAdapter.mapToDomain(entity);
-        return this.toResponse(domainUser);
+    ): Promise<NullableType<User>> {
+        const user = await this.usersRepository.findOneBy(options);
+        return user ? UserMapper.toDomain(user) : null;
     }
-
-    async findById(id: string): Promise<NullableType<UserResponse>> {
-        const entity = await this.usersRepository.findOne({
+    async findById(id: number): Promise<NullableType<User>> {
+        const user = await this.usersRepository.findOne({
             where: { id },
             relations: ['role', 'settings'],
         });
-
-        if (!entity) return null;
-
-        const domainUser = UserEntityAdapter.mapToDomain(entity);
-        return this.toResponse(domainUser);
-    }
-
-    private toResponse(user: UserResponse): UserResponse {
-        const { password, salt, ...safeFields } = user;
-        return {
-            ...safeFields,
-        } as UserResponse;
+        return user ? UserMapper.toDomain(user) : null;
     }
 }
