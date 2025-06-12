@@ -25,7 +25,7 @@ export class RoleRepository {
         return role ? RoleEntityAdapter.mapToDomain(role) : null;
     }
 
-    async findById(id: string): Promise<NullableType<Role>> {
+    async findById(id: number): Promise<NullableType<Role>> {
         const role = await this.rolesRepository.findOne({
             where: {
                 id: id,
@@ -34,7 +34,7 @@ export class RoleRepository {
         return role ? RoleEntityAdapter.mapToDomain(role) : null;
     }
 
-    async changeRole(userId: string, roleId: string): Promise<void> {
+    async changeRole(userId: number, roleId: number): Promise<void> {
         await this.usersRepository.update(userId, { role: { id: roleId } });
     }
 }

@@ -8,7 +8,7 @@ import { RoleRepository } from './roles.repository';
 export class RolesService {
     constructor(private readonly roleRepository: RoleRepository) { }
 
-    async findById(id: string): Promise<NullableType<Role>> {
+    async findById(id: number): Promise<NullableType<Role>> {
         return this.roleRepository.findById(id);
     }
 
@@ -16,7 +16,7 @@ export class RolesService {
         return this.roleRepository.findDefaultRole();
     }
 
-    async changeRole(userId: string, roleId: string): Promise<void> {
+    async changeRole(userId: number, roleId: number): Promise<void> {
         const role = await this.findById(roleId);
         if (!role) {
             throw new DetailsNotFoundException('Role', 'id', roleId);

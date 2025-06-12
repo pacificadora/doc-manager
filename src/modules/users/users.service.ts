@@ -3,23 +3,25 @@ import { FindOptionsWhere } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 
 import { NullableType } from '../../common/types/nullable.type';
-import { BcryptUtil } from '../../common/utils';
+import { BcryptUtil } from 'src/common/libs/index.libs';
 import {
     DetailsConflictException,
     DetailsNotFoundException,
 } from '../../exceptions';
 import { FileType } from '../files/domain/file';
 import { FilesService } from '../files/files.service';
-import { Role } from '../roles/domain/role';
+import { Role } from '../roles/dto/role-reponse.dto';
 import { RolesService } from '../roles/roles.service';
-import { User } from './domain/user';
+import { User } from './domain/user.domain';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserRepository } from './user.repository';
+import { UsersRepository } from './users.repository';
+import { UserEntity } from 'src/database/entities/user.entity';
+import { RoleEntity } from 'src/database/entities/role.entity';
 
 @Injectable()
 export class UserService {
     constructor(
-        private readonly usersRepository: UserRepository,
+        private readonly usersRepository: UsersRepository,
         private readonly rolesService: RolesService,
         private readonly filesService: FilesService,
     ) { }
@@ -88,15 +90,10 @@ export class UserService {
             salt,
             photo,
         });
-        await this.usersRepository.createUserSettings({
-            userId: user.id,
-            isEmailVerified: false,
-            isPhoneVerified: false,
-        });
         return user;
     }
 
-    async login(email: User['email']): Promise<NullableType<User>> {
+    async login(email: User['email']): Promise<NullableType<UserEntity>> {
         return this.usersRepository.findByEmail(email);
     }
     async findOne(options: FindOptionsWhere<User>): Promise<NullableType<User>> {

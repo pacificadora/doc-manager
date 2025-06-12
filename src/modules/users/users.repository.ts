@@ -2,22 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
-import { NullableType } from '../../../common/types/nullable.type';
-import { UserEntity } from '../../../database/entity/user.entity';
-import { UserSettingsEntity } from '../../../database/entity/user-settings.entity';
-import { User } from '../domain/user';
-import { UserSettings } from '../domain/user-setting';
-import { UserRepository } from '../user.repository';
-import { UserMapper } from './mappers/user.mapper';
-import { UserSettingsMapper } from './mappers/user-settings.mapper';
+import { NullableType } from 'src/common/types/nullable.type';
+import { UserEntity } from 'src/database/entities/user.entity';
+import { User } from './domain/user.domain';
+import { UserMapper } from './repositories/mapper/user.mapper';
 
 @Injectable()
-export class UsersRelationalRepository implements UserRepository {
+export class UsersRepository {
     constructor(
         @InjectRepository(UserEntity)
         private readonly usersRepository: Repository<UserEntity>,
-        @InjectRepository(UserSettingsEntity)
-        private readonly userSettingsRepository: Repository<UserSettingsEntity>,
     ) { }
 
     async create(data: User): Promise<User> {
@@ -27,7 +21,7 @@ export class UsersRelationalRepository implements UserRepository {
         );
         return UserMapper.toDomain(newEntity);
     }
-    async findByEmail(email: User['email']): Promise<NullableType<User>> {
+    async findByEmail(email: User['email']): Promise<NullableType<UserEntity>> {
         if (!email) {
             return null;
         }
@@ -37,13 +31,6 @@ export class UsersRelationalRepository implements UserRepository {
             },
         });
         return user;
-    }
-    async createUserSettings(data: UserSettings): Promise<UserSettings> {
-        const persistenceModel = UserSettingsMapper.toPersistence(data);
-        const newEntity = await this.userSettingsRepository.save(
-            this.userSettingsRepository.create(persistenceModel),
-        );
-        return newEntity;
     }
     async findOneBy(
         options: FindOptionsWhere<UserEntity>,
